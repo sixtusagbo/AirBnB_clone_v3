@@ -3,21 +3,25 @@
 Contains the TestDBStorageDocs and TestDBStorage classes
 """
 
-from datetime import datetime
 import inspect
+import json
+import os
+import unittest
+from datetime import datetime
+
+import pep8
+
 import models
-from models.engine import db_storage
+from models import storage
 from models.amenity import Amenity
 from models.base_model import BaseModel
 from models.city import City
+from models.engine import db_storage
 from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
-import json
-import os
-import pep8
-import unittest
+
 DBStorage = db_storage.DBStorage
 classes = {"Amenity": Amenity, "City": City, "Place": Place,
            "Review": Review, "State": State, "User": User}
@@ -68,7 +72,7 @@ test_db_storage.py'])
                             "{:s} method needs a docstring".format(func[0]))
 
 
-class TestFileStorage(unittest.TestCase):
+class TestDBStorage(unittest.TestCase):
     """Test the FileStorage class"""
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_all_returns_dict(self):
@@ -86,3 +90,20 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+
+    @unittest.skipIf(models.storage_t != 'db', 'Not testing db storage')
+    def test_get(self):
+        """Test that get resturns one object"""
+        first_state_id = list(storage.all(State).values())[0].id
+        self.assertEqual(first_state_id, storage.get(State, first_state_id).id)
+
+    @unittest.skipIf(models.storage_t != 'db', 'Not testing db storage')
+    def test_get_not_existing_id(self):
+        """Test that get resturns one object"""
+        self.assertEqual(None, storage.get(State, 'SomeBlaH'))
+
+    @unittest.skipIf(models.storage_t != 'db', 'Not testing db storage')
+    def test_count(self):
+        """Test that get resturns one object"""
+        self.assertIsInstance(storage.count(), int)
+        self.assertIsInstance(storage.count(State), int)
