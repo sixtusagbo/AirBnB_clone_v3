@@ -2,7 +2,7 @@
 """ the api module """
 from os import getenv
 
-from flask import Flask
+from flask import Flask, jsonify, make_response
 
 from api.v1.views import app_views
 from models import storage
@@ -19,6 +19,10 @@ port = getenv('HBNB_API_PORT', '5000')
 def teardown(exception):
     '''Cleanup operations'''
     storage.close()
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not Found'}), 404)
 
 
 if __name__ == '__main__':
