@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """Handles all RESTful API actions for `State` objects"""
 from api.v1.views import app_views
-from flask import jsonify, abort
+from flask import jsonify, abort, request
 from models import storage
 from models.state import State
 
@@ -46,4 +46,17 @@ def delete_state(state_id):
         abort(404)
     state.delete()
     storage.save()
+    request.get_json
     return jsonify({})
+
+
+@app_views.route("/states", methods=["POST"])
+def create_state():
+    """Create a `State` object"""
+    if not request.get_json():
+        abort(400, "Not a JSON")
+    if "name" not in request.get_json():
+        abort(400, "Missing name")
+    state = State(**request.get_json())
+    state.save()
+    return jsonify(state.to_dict()), 201
