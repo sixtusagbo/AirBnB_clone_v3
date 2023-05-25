@@ -60,3 +60,24 @@ def create_state():
     state = State(**request.get_json())
     state.save()
     return jsonify(state.to_dict()), 201
+
+
+@app_views.route("/states/<state_id>", methods=["PUT"])
+def update_state(state_id):
+    """Update `State` object
+
+    Args:
+        state_id (str): state identifier
+
+    Returns:
+        Response: `State` object with status code 200
+    """
+    state = storage.get(State, state_id)
+    if not state:
+        abort(404)
+    if not request.get_json():
+        abort(400, "Not a JSON")
+    key = "name"
+    setattr(state, key, request.get_json().get(key))
+    state.save()
+    return jsonify(state.to_dict())
