@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+"""Handles all RESTful API actions for `City`"""
 from api.v1.views import app_views
 from flask import jsonify, abort, request
 from models import storage
@@ -15,7 +17,19 @@ def cities_in_a_state(state_id):
     state = storage.get(State, state_id)
     if not state:
         abort(404)
+
     result = []
     for city in state.cities:
         result.append(city.to_dict())
+
     return jsonify(result)
+
+
+@app_views.route("/cities/<city_id>")
+def city(city_id):
+    """Retrieve a `City`"""
+    city = storage.get(City, city_id)
+    if not city:
+        abort(404)
+
+    return jsonify(city.to_dict())
