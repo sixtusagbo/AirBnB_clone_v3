@@ -2,7 +2,7 @@ from api.v1.views import app_views
 from models import storage
 from models.amenity import Amenity
 
-from flask import jsonify, abort
+from flask import jsonify, abort, request
 
 
 @app_views.route("/amenities")
@@ -59,3 +59,26 @@ def delete_amenity(amenity_id):
     storage.save()
 
     return jsonify({})
+
+
+@app_views.route("/amenities", methods=["POST"])
+def create_amenity():
+    """Create an amenity
+
+    Returns:
+        dict: New amenity in JSON
+
+    Raises:
+        400: If request body is not a valid JSON
+        400: If the payload does not contain the key `name`
+    """
+    payload = request.get_json()
+    if not payload:
+        abort(400, "Not a JSON")
+    if "name" not in payload:
+        abort(400, "Missing name")
+
+    amenity = Amenity(**payload)
+    amenity.save()
+
+    return jsonify(amenity.to_dict())
