@@ -2,7 +2,7 @@
 """ the api module """
 from os import getenv
 
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify
 
 from api.v1.views import app_views
 from models import storage
@@ -27,4 +27,4 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-    app.run(host, port, threaded=True)
+    app.run(host, port, threaded=True, debug=True)
