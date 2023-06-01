@@ -36,3 +36,26 @@ def amenity(amenity_id):
         abort(404)
 
     return jsonify(amenity.to_dict())
+
+
+@app_views.route("/amenities/<amenity_id>", methods=["DELETE"])
+def delete_amenity(amenity_id):
+    """Delete an amenity.
+
+    Args:
+        amenity_id (str): The ID of the amenity.
+
+    Returns:
+        dict: An empty JSON.
+
+    Raises:
+        404: If the specified amenity_id does not exist.
+    """
+    amenity = storage.get(Amenity, amenity_id)
+    if amenity is None:
+        abort(404)
+
+    amenity.delete()
+    storage.save()
+
+    return jsonify({})
