@@ -82,3 +82,19 @@ def create_amenity():
     amenity.save()
 
     return jsonify(amenity.to_dict())
+
+
+@app_views.route("/amenities/<amenity_id>", methods=["PUT"])
+def update_amenity(amenity_id):
+    amenity = storage.get(Amenity, amenity_id)
+    payload = request.get_json()
+    if not amenity:
+        abort(404)
+    if not payload:
+        abort(400, "Not a JSON")
+
+    key = "name"
+    setattr(amenity, key, payload[key])
+    amenity.save()
+
+    return jsonify(amenity.to_dict())
