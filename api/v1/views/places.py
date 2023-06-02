@@ -38,9 +38,35 @@ def place(place_id):
 
     Returns:
         dict: Place JSON
+
+    Raises:
+        404: If the specified place_id does not exist
     """
     place = storage.get(Place, place_id)
     if not place:
         abort(404)
+
+    return jsonify(place.to_dict())
+
+
+@app_views.route("/places/<place_id>", methods=["DELETE"])
+def delete_place(place_id):
+    """Delete a place
+
+    Args:
+        place_id (str): ID of the place
+
+    Returns:
+        dict: An empty JSON
+
+    Raises:
+        404: If the specified place_id does not exist
+    """
+    place = storage.get(Place, place_id)
+    if not place:
+        abort(404)
+
+    place.delete()
+    storage.save()
 
     return jsonify(place.to_dict())
