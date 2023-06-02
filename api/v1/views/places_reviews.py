@@ -2,6 +2,7 @@ from api.v1.views import app_views
 from models import storage
 from models.review import Review
 from models.place import Place
+from models.user import User
 from flask import jsonify, request, abort
 
 
@@ -64,3 +65,36 @@ def delete_review(review_id):
     storage.save()
 
     return jsonify({})
+
+
+@app_views.route("/places/<place_id>/reviews", methods=["POST"])
+def create_review(place_id):
+    """Create a review.
+
+    Args:
+        place_id (str): ID of the place to review.
+
+    Returns:
+        dict: The created review.
+
+    Raises:
+        404: If the specified place_id or user_id does not exist
+        400: If the request body is not a valid JSON or if it is missing user_id or text.
+    """
+    place = storage.get(Place, place_id)
+    payload = request.get_json()
+    if not place:
+        abort(404)
+    if not payload:
+        abort(400, "Not a JSON")
+    if "user_id" not in payload:
+        abort(400, "Missing user_id")
+    if not storage.get(User, payload["user_id"]):
+        abort(404)
+    if "text" not in payload:
+        abort(400, "Missing text")
+
+    review = Review(**payload, place_id=place_id)
+    review.save()
+
+    return jsonify(review.to_dict()), 201
