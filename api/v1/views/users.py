@@ -39,6 +39,14 @@ def one_user(user_id):
 
 @app_views.route("/users/<user_id>", methods=["DELETE"])
 def delete_user(user_id):
+    """Delete user
+
+    Args:
+        user_id (str): ID of the user
+
+    Returns:
+        dict: Am empty JSON
+    """
     user = storage.get(User, user_id)
     if not user:
         abort(404)
@@ -51,6 +59,11 @@ def delete_user(user_id):
 
 @app_views.route("/users", methods=["POST"])
 def create_user():
+    """Create user
+
+    Returns:
+        dict: User JSON
+    """
     payload = request.get_json()
     if not payload:
         abort(400, "Not a JSON")
@@ -63,3 +76,28 @@ def create_user():
     user.save()
 
     return jsonify(user.to_dict()), 201
+
+
+@app_views.route("/users/<user_id>", methods=["PUT"])
+def update_user(user_id):
+    """Update user
+
+    Args:
+        user_id (str): ID of the user
+
+    Returns:
+        dict: Updated user in JSON
+    """
+    user = storage.get(User, user_id)
+    payload = request.get_json()
+    if not user:
+        abort(404)
+    if not payload:
+        abort(400, description="Not a JSON")
+
+    for key, value in user.to_dict().items():
+        if key not in ["id", "email", "created_at", "updated_at", "__class__"]:
+            setattr(user, key, payload[key] if key in payload else value)
+    user.save()
+
+    return jsonify(user.to_dict())
