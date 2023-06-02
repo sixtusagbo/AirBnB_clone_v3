@@ -27,3 +27,20 @@ def reviews_of_a_place(place_id):
         result.append(review.to_dict())
 
     return jsonify(result)
+
+
+@app_views.route("/reviews/<review_id>")
+def review(review_id):
+    """Get a review.
+
+    Args:
+        review_id (str): ID of the review.
+
+    Returns:
+        dict: Review in JSON.
+    """
+    review = storage.get(Review, review_id)
+    if not review:
+        abort(404)
+
+    return jsonify(review.to_dict())
