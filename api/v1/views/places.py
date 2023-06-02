@@ -2,6 +2,7 @@ from api.v1.views import app_views
 from models import storage
 from models.city import City
 from models.place import Place
+from models.user import User
 from flask import jsonify, abort, request
 
 
@@ -70,3 +71,36 @@ def delete_place(place_id):
     storage.save()
 
     return jsonify(place.to_dict())
+
+
+@app_views.route("/cities/<city_id>/places", methods=["POST"])
+def create_place(city_id):
+    """Create a places in a city.
+
+    Args:
+        city_id (str): ID of the City where the place will be created.
+
+    Returns:
+        dict: The created place.
+
+    Raises:
+        404: If the specified city_id does not exist.
+        400: If the request body is not a valid JSON or if it is missing the user_id or name.
+    """
+    payload = request.get_json()
+    city = storage.get(City, city_id)
+    if not city:
+        abort(404)
+    if not payload:
+        abort(400, "Not a JSON")
+    if "user_id" not in payload:
+        abort(400, "Missing user_id")
+    if not storage.get(User, payload["user_id"]):
+        abort(404)
+    if "name" not in payload:
+        abort(400, "Missing name")
+
+    place = Place(**payload, city_id=city_id)
+    place.save()
+
+    return jsonify(place.to_dict()), 201
