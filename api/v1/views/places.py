@@ -1,6 +1,7 @@
 from api.v1.views import app_views
 from models import storage
 from models.city import City
+from models.place import Place
 from flask import jsonify, abort, request
 
 
@@ -26,3 +27,20 @@ def places(city_id):
         result.append(place.to_dict())
 
     return jsonify(result)
+
+
+@app_views.route("/places/<place_id>")
+def place(place_id):
+    """Get a place
+
+    Args:
+        place_id (str): ID of the place
+
+    Returns:
+        dict: Place JSON
+    """
+    place = storage.get(Place, place_id)
+    if not place:
+        abort(404)
+
+    return jsonify(place.to_dict())
