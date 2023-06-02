@@ -2,6 +2,7 @@ from api.v1.views import app_views
 from flask import jsonify, request, abort
 from models import storage
 from models.user import User
+from hashlib import md5
 
 
 @app_views.route("/users")
@@ -97,7 +98,11 @@ def update_user(user_id):
 
     for key, value in user.to_dict().items():
         if key not in ["id", "email", "created_at", "updated_at", "__class__"]:
-            setattr(user, key, payload[key] if key in payload else value)
+            if key in payload:
+                if key == "password":
+                    setattr(user, key, md5(str(payload[key]).encode()).hexdigest())
+                else:
+                    setattr(user, key, payload[key] if key in payload else value)
     user.save()
 
     return jsonify(user.to_dict())
