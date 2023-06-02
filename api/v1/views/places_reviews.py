@@ -98,3 +98,39 @@ def create_review(place_id):
     review.save()
 
     return jsonify(review.to_dict()), 201
+
+
+@app_views.route("/reviews/<review_id>", methods=["PUT"])
+def update_review(review_id):
+    """Update a review.
+
+    Args:
+        review_id (str): ID of the review to update.
+
+    Returns:
+        dict: The updated review.
+
+    Raises:
+        404: If the specified review_id does not exist
+        400: If the request body is not a valid JSON.
+    """
+    review = storage.get(Review, review_id)
+    payload = request.get_json()
+    if not review:
+        abort(404)
+    if not payload:
+        abort(400, "Not a JSON")
+
+    for key, value in review.to_dict().items():
+        if key not in [
+            "id",
+            "user_id",
+            "place_id",
+            "created_at",
+            "updated_at",
+            "__class__",
+        ]:
+            setattr(review, key, payload[key] if key in payload else value)
+    review.save()
+
+    return jsonify(review.to_dict())
