@@ -104,3 +104,39 @@ def create_place(city_id):
     place.save()
 
     return jsonify(place.to_dict()), 201
+
+
+@app_views.route("/places/<place_id>", methods=["PUT"])
+def update_place(place_id):
+    """Update a place.
+
+    Args:
+        place_id (str): ID of the place to update.
+
+    Returns:
+        dict: Updated place in JSON.
+
+    Raises:
+        404: If the specified place_id does not exist.
+        400: If the request body is not a valid JSON.
+    """
+    place = storage.get(Place, place_id)
+    payload = request.get_json()
+    if not place:
+        abort(404)
+    if not payload:
+        abort(400, "Not a JSON")
+
+    for key, value in place.to_dict().items():
+        if key not in [
+            "id",
+            "user_id",
+            "city_id",
+            "created_at",
+            "updated_at",
+            "__class__",
+        ]:
+            setattr(place, key, payload[key] if key in payload else value)
+    place.save()
+
+    return jsonify(place.to_dict())
