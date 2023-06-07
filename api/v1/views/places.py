@@ -105,7 +105,7 @@ def create_place(city_id):
     if "name" not in payload:
         abort(400, "Missing name")
 
-    place = Place(**payload, city_id=city_id)
+    place = Place(city_id=city_id, **payload)
     place.save()
 
     return jsonify(place.to_dict()), 201

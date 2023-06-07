@@ -96,7 +96,7 @@ def create_review(place_id):
     if "text" not in payload:
         abort(400, "Missing text")
 
-    review = Review(**payload, place_id=place_id)
+    review = Review(place_id=place_id, **payload)
     review.save()
 
     return jsonify(review.to_dict()), 201
