@@ -81,7 +81,8 @@ def create_review(place_id):
 
     Raises:
         404: If the specified place_id or user_id does not exist
-        400: If the request body is not a valid JSON or if it is missing user_id or text.
+        400: If the request body is not a valid JSON or if it is missing
+             user_id or text.
     """
     place = storage.get(Place, place_id)
     payload = request.get_json()

@@ -102,9 +102,11 @@ def update_user(user_id):
         if key not in ["id", "email", "created_at", "updated_at", "__class__"]:
             if key in payload:
                 if key == "password":
-                    setattr(user, key, md5(str(payload[key]).encode()).hexdigest())
+                    setattr(user, key,
+                            md5(str(payload[key]).encode()).hexdigest())
                 else:
-                    setattr(user, key, payload[key] if key in payload else value)
+                    setattr(user, key,
+                            payload[key] if key in payload else value)
     user.save()
 
     return jsonify(user.to_dict())

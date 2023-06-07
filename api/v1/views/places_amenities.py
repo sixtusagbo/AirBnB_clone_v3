@@ -36,7 +36,8 @@ def amenities_of_a_place(place_id):
     return jsonify(result)
 
 
-@app_views.route("/places/<place_id>/amenities/<amenity_id>", methods=["DELETE"])
+@app_views.route("/places/<place_id>/amenities/<amenity_id>",
+                 methods=["DELETE"])
 def unlink_amenity_from_a_place(place_id, amenity_id):
     """Unlink amenity from a place.
 
@@ -48,7 +49,8 @@ def unlink_amenity_from_a_place(place_id, amenity_id):
         dict: An empty JSON.
 
     Raises:
-        404: If the specified place_id or amenity_id does not exist or if the amenity is not linked to the place before the request.
+        404: If the specified place_id or amenity_id does not exist or if the
+             amenity is not linked to the place before the request.
     """
     place = storage.get(Place, place_id)
     amenity = storage.get(Amenity, amenity_id)

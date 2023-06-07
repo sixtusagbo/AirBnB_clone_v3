@@ -89,7 +89,8 @@ def create_place(city_id):
 
     Raises:
         404: If the specified city_id does not exist.
-        400: If the request body is not a valid JSON or if it is missing the user_id or name.
+        400: If the request body is not a valid JSON or if it is missing the
+             user_id or name.
     """
     payload = request.get_json()
     city = storage.get(City, city_id)
