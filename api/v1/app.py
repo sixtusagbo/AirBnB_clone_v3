@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-""" the api module """
+"""
+The RESTful api starts here
+"""
 from os import getenv
 
 from flask import Flask, jsonify

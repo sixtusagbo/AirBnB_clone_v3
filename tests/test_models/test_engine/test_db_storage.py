@@ -134,6 +134,6 @@ class TestDBStorage(unittest.TestCase):
 
     @unittest.skipIf(models.storage_t != "db", "Not testing db storage")
     def test_count(self):
-        """Test that get resturns one object"""
+        """Test that count of object or specific class"""
         self.assertIsInstance(storage.count(), int)
         self.assertIsInstance(storage.count(State), int)
