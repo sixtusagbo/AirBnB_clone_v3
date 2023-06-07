@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """Handles all RESTful API actions for `Place`"""
 from flask import jsonify, abort, request
-from json import JSONDecodeError
 
 from api.v1.views import app_views
 from models import storage
@@ -150,9 +149,8 @@ def update_place(place_id):
 @app_views.route("/places_search", methods=["POST"])
 def search():
     # If the HTTP request body is not valid JSON
-    try:
-        guide = request.get_json()
-    except JSONDecodeError:
+    guide = request.get_json()
+    if not guide:
         abort(400, "Not a JSON")
 
     state_ids = guide.get("states")
