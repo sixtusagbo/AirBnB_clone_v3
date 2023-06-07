@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-"""views index"""
+"""
+Views index, contains status and stat endpoints.
+"""
 from api.v1.views import app_views
 from flask import jsonify
 from models.amenity import Amenity
